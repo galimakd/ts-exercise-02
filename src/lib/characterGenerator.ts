@@ -1,19 +1,12 @@
-import fetch from 'node-fetch'
+import fetch, { Response } from 'node-fetch'
+import { Character, ApiResponse } from './Interfaces.js'
 
-interface CharacterObject {
-  next: string | null,
-  results: {
-    name: string,
-    gender: string,
-  }[]
-}
-
-export default async function* characterGenerator(): AsyncGenerator<{ name: string, gender: string }, void, undefined> {
+export default async function* characterGenerator(): AsyncGenerator<Character, void, undefined> {
   let page: string | null = 'https://swapi.dev/api/people/'
 
   while (page) {
-    const characters = await fetch(page)
-    const charactersObject = await characters.json() as CharacterObject
+    const characters: Response = await fetch(page)
+    const charactersObject: ApiResponse = await characters.json() as ApiResponse
     yield* charactersObject.results
 
     page = charactersObject.next
